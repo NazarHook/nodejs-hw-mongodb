@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: nodejs-hw-mongodb
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: MONGODB_USER
+        value: yourUsername
+      - key: MONGODB_PASSWORD
+        value: yourPassword
+      - key: MONGODB_URL
+        value: yourMongoDBClusterUrl
+      - key: MONGODB_DB
+        value: yourDatabaseName
