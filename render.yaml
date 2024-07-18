@@ -1,18 +1,79 @@
 services:
-  - type: web
-    name: nodejs-hw-mongodb
-    env: node
-    plan: free
-    buildCommand: npm install
-    startCommand: npm start
-    envVars:
-      - key: PORT
-        value: 3000
-      - key: MONGODB_USER
-        value: yourUsername
-      - key: MONGODB_PASSWORD
-        value: yourPassword
-      - key: MONGODB_URL
-        value: yourMongoDBClusterUrl
-      - key: MONGODB_DB
-        value: yourDatabaseName
+- type: web
+  name: nodejs-hw-mongodb-
+  runtime: node
+  repo: https://github.com/NazarHook/nodejs-hw-mongodb
+  plan: free
+  envVars:
+  - key: MONGODB_DB
+    sync: false
+  - key: MONGODB_URL
+    sync: false
+  - key: MONGODB_PASSWORD
+    sync: false
+  - key: MONGODB_USER
+    sync: false
+  - key: PORT
+    sync: false
+  region: oregon
+  buildCommand: npm
+  startCommand: npm start
+- type: web
+  name: nodejs-hw-mongodb-1
+  runtime: node
+  repo: https://github.com/NazarHook/nodejs-hw-mongodb
+  plan: free
+  envVars:
+  - key: MONGODB_DB
+    sync: false
+  - key: MONGODB_URL
+    sync: false
+  - key: MONGODB_PASSWORD
+    sync: false
+  - key: MONGODB_USER
+    sync: false
+  - key: PORT
+    sync: false
+  region: oregon
+  buildCommand: nám
+  startCommand: npm run dev
+- type: web
+  name: nodejs-hw-mongodb-2
+  runtime: node
+  repo: https://github.com/NazarHook/nodejs-hw-mongodb
+  plan: free
+  envVars:
+  - key: MONGODB_DB
+    sync: false
+  - key: MONGODB_URL
+    sync: false
+  - key: MONGODB_PASSWORD
+    sync: false
+  - key: MONGODB_USER
+    sync: false
+  - key: PORT
+    sync: false
+  region: oregon
+  buildCommand: npm
+  startCommand: npm run dev
+- type: web
+  name: nodejs-hw-mongodb
+  runtime: node
+  repo: https://github.com/NazarHook/nodejs-hw-mongodb
+  branch: hw2-mongodb
+  plan: free
+  envVars:
+  - key: MONGODB_DB
+    sync: false
+  - key: MONGODB_URL
+    sync: false
+  - key: MONGODB_PASSWORD
+    sync: false
+  - key: MONGODB_USER
+    sync: false
+  - key: PORT
+    sync: false
+  region: oregon
+  buildCommand: npm
+  startCommand: npm install
+version: "1"
