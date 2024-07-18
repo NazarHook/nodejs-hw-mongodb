@@ -1,5 +1,3 @@
-<<<<<<< Updated upstream
-=======
 import setupServer from './server.js';
 import initMongoConnection from './db/initMongoConnection.js';
 import logger from './logger.js';
@@ -15,4 +13,3 @@ const startApp = async () => {
 };
 
 startApp();
->>>>>>> Stashed changes

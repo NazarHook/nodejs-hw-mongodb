@@ -1,8 +1,6 @@
-<<<<<<< Updated upstream
-=======
 {
     "semi": true,
     "singleQuote": true,
     "trailingComma": "all",
-    "printWidth": 80}
->>>>>>> Stashed changes
+    "printWidth": 80
+}

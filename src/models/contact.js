@@ -1,5 +1,3 @@
-<<<<<<< Updated upstream
-=======
 import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
@@ -17,4 +15,3 @@ const contactSchema = new Schema({
 const Contact = mongoose.model('Contact', contactSchema);
 
 export default Contact;
->>>>>>> Stashed changes
