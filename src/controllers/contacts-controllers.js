@@ -1,17 +1,28 @@
 import createHttpError from "http-errors";
 import { getContacts, getContactById, addContact, upsertContact, deleteContact } from '../services/contact-services.js';
+import parsePaginationParams from "../utils/parsePaginationParams.js";
+import parseContactFilterParams from "../utils/parseContactFilterparams.js";
+import { contactFiledList } from "../constants/contact-constants.js";
 
 export const getContactsController = async (req, res) => {
-  try {
-    const contacts = await getContacts();
-    res.status(200).json({
-      status: 'success',
-      message: 'Successfully found contacts!',
-      data: contacts,
-    });
-  } catch (error) {
-    res.status(500).json({ status: 'error', message: error.message });
-  }
+  const {query} = req
+  const {page, perPage} = parsePaginationParams(query)
+  const {sortBy, sortOrder} = parseSortParams(query, contactFiledList)
+  const filter = parseContactFilterParams(query)
+
+  const data = await getContacts({
+    filter,
+    page,
+    perPage,
+    sortBy, 
+    sortOrder,
+  })
+  console.log(data);
+  res.json({
+    status: 200,
+    data,
+    message: "Success found movies"
+});
 };
 
 export const getContactByIdController = async (req, res) => {
