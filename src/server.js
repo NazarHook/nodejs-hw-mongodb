@@ -12,7 +12,7 @@ const setupServer = () => {
         target: "pino-pretty"
     }
 });
-app.use(logger)
+// app.use(logger)
   app.use(cors());
   app.use(express.json())
   app.use('/contacts', contactsRouter);
