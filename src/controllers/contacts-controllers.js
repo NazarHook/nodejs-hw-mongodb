@@ -3,25 +3,24 @@ import { getContacts, getContactById, addContact, upsertContact, deleteContact }
 import parsePaginationParams from "../utils/parsePaginationParams.js";
 import parseContactFilterParams from "../utils/parseContactFilterparams.js";
 import { contactFiledList } from "../constants/contact-constants.js";
+import parseSortParams from "../utils/parseSortParams.js";
 
 export const getContactsController = async (req, res) => {
   const {query} = req
   const {page, perPage} = parsePaginationParams(query)
-  const {sortBy, sortOrder} = parseSortParams(query, contactFiledList)
+  const {sortBy, sortOrder} =  parseSortParams(query, contactFiledList)
   const filter = parseContactFilterParams(query)
-
   const data = await getContacts({
-    filter,
     page,
     perPage,
     sortBy, 
     sortOrder,
+    filter,
   })
-  console.log(data);
-  res.json({
+    res.json({
     status: 200,
     data,
-    message: "Success found movies"
+    message: "Success found contacts"
 });
 };
 

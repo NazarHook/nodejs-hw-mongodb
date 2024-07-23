@@ -1,16 +1,20 @@
 import { contactFiledList } from "../constants/contact-constants.js";
 import { sortOrderList } from "../constants/index.js";
 import Contact from "../db/models/contact.js"
+import calcPaginationData from "../utils/calcPaginationdata.js";
 
-export const getContacts = async ({filter, page, perPage, sortBy = contactFiledList[0], sortOrder = sortOrderList[0]}) => {
+export const getContacts = async ({ page, perPage, sortBy = contactFiledList[0], sortOrder = sortOrderList[0], filter }) => {
     const skip = (page - 1) * perPage;
-    const databaseQuery = Contact.find();
-    if(filter.type) {
-        databaseQuery.where("type").equals(filter.type);
+    
+    let dataBaseQuery = Contact.find();
+
+    if (filter.contactType) {
+        dataBaseQuery = dataBaseQuery.where("contactType").equals(filter.contactType);
     }
-    const items = await databaseQuery.skip(skip).limit(perPage).sort({[sortBy]: sortOrder});
-    const totalItems = await Movie.find().merge(databaseQuery).countDocuments();
-    const {totalPages, hasNextPage, hasPrevPage} = calcPagnationData({total: totalItems, perPage, page});
+    const items = await dataBaseQuery.skip(skip).limit(perPage).sort({ [sortBy]: sortOrder });
+    const totalItems = await dataBaseQuery.clone().countDocuments();
+    const { totalPages, hasNextPage, hasPrevPage } = calcPaginationData({ total: totalItems, perPage, page });
+
     return {
         items,
         totalItems,
@@ -19,8 +23,8 @@ export const getContacts = async ({filter, page, perPage, sortBy = contactFiledL
         totalPages,
         hasNextPage,
         hasPrevPage,
-    }
-} 
+    };
+};
 
 export const getContactById = id => Contact.findById(id);
 
