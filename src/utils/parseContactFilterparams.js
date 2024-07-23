@@ -6,10 +6,10 @@ const parseBoolean = value => {
         return value === 'true' 
 }
 
- const parseContactFilterParams = ({type}) => {
-    const parsedType = typeList.includes(type) ? type : null
+ const parseContactFilterParams = ({contactType}) => {
+    const parsedContactType = typeList.includes(contactType) ? contactType : null
     return {
-        type: parsedType
+        contactType: parsedContactType
     }
  }
  export default parseContactFilterParams

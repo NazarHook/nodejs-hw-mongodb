@@ -12,13 +12,12 @@ const setupServer = () => {
         target: "pino-pretty"
     }
 });
-// app.use(logger)
+app.use(logger)
   app.use(cors());
   app.use(express.json())
   app.use('/contacts', contactsRouter);
   app.use(notFoundHandler)
  app.use(errorHandler)
-
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => console.log(`Server running on ${PORT} PORT`))
 };
