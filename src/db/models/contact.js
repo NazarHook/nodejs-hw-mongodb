@@ -6,9 +6,10 @@ const contactSchema = new Schema({
   isFavourite: { type: Boolean, default: false },
   contactType: { type: String, enum: ['work', 'home', 'personal'], required: true, default: 'personal' }
 }, {
-  timestamps: true
+  timestamps: true,
+  versionKey: false
 });
 
 const Contact = model('Contact', contactSchema);
 
-export default Contact;
+export default Contact; 

@@ -5,7 +5,7 @@ export const contactAddSchema = Joi.object({
         'any.required': 'name is required'
     }),
     phoneNumber: Joi.number().positive().min(2).required(),
-    email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
+    email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
     isFavourite: Joi.boolean(),
     contactType: Joi.string().min(3).max(20).valid(...typeList).required()
 })
