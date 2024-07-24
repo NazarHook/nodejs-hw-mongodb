@@ -9,8 +9,8 @@ if (Number.isNaN(parsedValue)) {
 return parsedValue;
 }
 const parsePaginationParams = ({page, perPage}) => {
-    const parsedPage = parsedNumber(page)
-    const parsedPerPage = parsedNumber(perPage)
+    const parsedPage = parsedNumber(page, 1)
+    const parsedPerPage = parsedNumber(perPage, 5)
     return {
         page: parsedPage,
         perPage: parsedPerPage
