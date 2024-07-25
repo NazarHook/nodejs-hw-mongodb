@@ -4,7 +4,6 @@ import parsePaginationParams from "../utils/parsePaginationParams.js";
 import parseContactFilterParams from "../utils/parseContactFilterparams.js";
 import { contactFiledList } from "../constants/contact-constants.js";
 import parseSortParams from "../utils/parseSortParams.js";
-
 export const getContactsController = async (req, res) => {
   const {query} = req
   const {page, perPage} = parsePaginationParams(query)
@@ -25,6 +24,7 @@ export const getContactsController = async (req, res) => {
 };
 
 export const getContactByIdController = async (req, res) => {
+  console.log('hello');
   const { id } = req.params;
   const contact = await getContactById(id);
   if (!contact) {
@@ -55,7 +55,6 @@ export const updateContactController = async (req, res) => {
   const data = await upsertContact({ _id: id }, req.body, { upsert: true });
   const status = data.isNew ? 201 : 200;
   const message = data.isNew ? "Contact successfully added!" : "Contact successfully updated!";
-
   res.json({
     status,
     message,
@@ -74,9 +73,11 @@ export const patchContactController = async (req, res) => {
   res.json({
     status: 200,
     message: "Contact successfully updated!",
-    data: result,
+    data: result.data.value,
   });
 };
+
+
 
 export const deleteContactController = async (req, res) => {
   const { id } = req.params;
@@ -87,9 +88,7 @@ export const deleteContactController = async (req, res) => {
     throw createHttpError(404, `Contact with id=${id} not found`);
   }
 
-  res.json({
-    status: 204,
+  res.status(204).json({
     message: "Contact successfully deleted!",
-    data: result,
   });
 };
