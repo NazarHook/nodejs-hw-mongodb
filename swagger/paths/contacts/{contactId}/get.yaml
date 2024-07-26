@@ -1,0 +1,21 @@
+tags:
+  - Contacts
+summary: Retrieve a specific contact by ID
+operationId: getContactById
+parameters:
+  - name: contactId
+    in: path
+    required: true
+    schema:
+      type: string
+responses:
+  '200':
+    description: A specific contact
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/Contact'
+  '404':
+    description: Contact not found
+  '500':
+    description: Server error

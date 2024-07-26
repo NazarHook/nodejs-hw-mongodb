@@ -1,0 +1,29 @@
+tags:
+  - Contacts
+summary: Update a specific contact by ID
+operationId: updateContactById
+parameters:
+  - name: contactId
+    in: path
+    required: true
+    schema:
+      type: string
+requestBody:
+  content:
+    application/json:
+      schema:
+        $ref: '#/components/schemas/Contact'
+  required: true
+responses:
+  '200':
+    description: Contact updated successfully
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/Contact'
+  '404':
+    description: Contact not found
+  '400':
+    description: Invalid input
+  '500':
+    description: Server error

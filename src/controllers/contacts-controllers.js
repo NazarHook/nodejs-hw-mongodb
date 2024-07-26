@@ -4,24 +4,20 @@ import parsePaginationParams from "../utils/parsePaginationParams.js";
 import parseContactFilterParams from "../utils/parseContactFilterparams.js";
 import { contactFiledList } from "../constants/contact-constants.js";
 import parseSortParams from "../utils/parseSortParams.js";
+import saveFileToCloudinary from "../utils/saveFIleToCloudinary.js";
+
 export const getContactsController = async (req, res) => {
   const { _id: userId } = req.user;
-  const {query} = req
-  const {page, perPage} = parsePaginationParams(query)
-  const {sortBy, sortOrder} =  parseSortParams(query, contactFiledList)
+  const { query } = req;
+  const { page, perPage } = parsePaginationParams(query);
+  const { sortBy, sortOrder } = parseSortParams(query, contactFiledList);
   const filter = { ...parseContactFilterParams(query), userId };
- const data = await getContacts({
-    page,
-    perPage,
-    sortBy, 
-    sortOrder,
-    filter,
-  })
-    res.json({
+  const data = await getContacts({ page, perPage, sortBy, sortOrder, filter });
+  res.json({
     status: 200,
     data,
-    message: "Success found contacts"
-});
+    message: "Successfully found contacts",
+  });
 };
 
 export const getContactByIdController = async (req, res) => {
@@ -41,13 +37,15 @@ export const getContactByIdController = async (req, res) => {
 
 export const addContactController = async (req, res) => {
   const { _id: userId } = req.user;
-    const data = await addContact({ ...req.body, userId });
+  const { path: filePath } = req.file;
+  const photo = await saveFileToCloudinary(filePath);
+  const data = await addContact({ ...req.body, userId, photo: photo.secure_url });
 
-    res.status(201).json({
-      status: 201,
-      message: 'Contact successfully added!',
-      data: data,
-    });
+  res.status(201).json({
+    status: 201,
+    message: 'Contact successfully added!',
+    data: data,
+  });
 };
 
 export const updateContactController = async (req, res) => {
