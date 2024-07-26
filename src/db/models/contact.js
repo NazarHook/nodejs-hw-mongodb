@@ -10,18 +10,17 @@ const contactSchema = new Schema({
   userId: {
     type: Schema.Types.ObjectId,
     required: true,
-}
+  },
+  photo: { type: String },
 }, {
   timestamps: true,
   versionKey: false
 });
 
 contactSchema.post("save", mongooseSaveError);
-
 contactSchema.pre("findOneAndUpdate", setUpdateSettings);
-
 contactSchema.post("findOneAndUpdate", mongooseSaveError);
 
 const Contact = model('Contact', contactSchema);
 
-export default Contact; 
+export default Contact;
