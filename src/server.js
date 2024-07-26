@@ -25,7 +25,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
   app.use(express.static(PUBLIC_DIR));
   app.use("/auth", authRouter);
   app.use('/contacts', contactsRouter);
-  app.use(notFoundHandler)
+  app.use(notFoundHandler)  
  app.use(errorHandler)
   const PORT = process.env.PORT || 3001;  
   app.listen(PORT, () => console.log(`Server running on ${PORT} PORT`))

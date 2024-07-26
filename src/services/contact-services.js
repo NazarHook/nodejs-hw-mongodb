@@ -5,7 +5,7 @@ import calcPaginationData from "../utils/calcPaginationdata.js";
 
 export const getContacts = async ({ page, perPage, sortBy = contactFiledList[0], sortOrder = sortOrderList[0], filter }) => {
     const skip = (page - 1) * perPage;
-    
+    console.log("hello");
     let query = Contact.find();
     if(filter.userId) {
         query.where("userId").equals(filter.userId);
