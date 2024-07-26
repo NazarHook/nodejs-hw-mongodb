@@ -7,7 +7,9 @@ export const getContacts = async ({ page, perPage, sortBy = contactFiledList[0],
     const skip = (page - 1) * perPage;
     
     let query = Contact.find();
-
+    if(filter.userId) {
+        query.where("userId").equals(filter.userId);
+    }
     if (filter.contactType) {
         query = query.where("contactType").equals(filter.contactType);
     }
@@ -26,7 +28,7 @@ export const getContacts = async ({ page, perPage, sortBy = contactFiledList[0],
     };
 };
 
-export const getContactById = id => Contact.findById(id);
+export const getContactById = id => Contact.findOne(id);
 
 export const addContact = data => Contact.create(data);
 
