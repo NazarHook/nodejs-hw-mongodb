@@ -8,11 +8,9 @@ import notFoundHandler from './middlewares/notFoundHandler.js'
 import errorHandler from './middlewares/errorHandler.js';
 import cookieParser from "cookie-parser";
 import { PUBLIC_DIR } from "./constants/index.js";
-import swaggerUi from 'swagger-ui-express'
-import swaggerDocument from '../docs/swagger.json' assert { type: 'json' };
 const setupServer = () => {
   const app = express();
-  const logger = pino({
+  const logger = pino({ 
     transport: {
         target: "pino-pretty"
     }

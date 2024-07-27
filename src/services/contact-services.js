@@ -30,7 +30,7 @@ export const getContacts = async ({ page, perPage, sortBy = contactFiledList[0],
 
 export const getContactById = id => Contact.findOne(id);
 
-export const addContact = data => Contact.create(data);
+export const addContact = data => Contact.create(data); 
 
 export const upsertContact = async (filter, data, options = {}) => {
     const result = await Contact.findOneAndUpdate(filter, data, {

@@ -7,12 +7,13 @@ export const contactAddSchema = Joi.object({
     phoneNumber: Joi.number().positive().min(2).required(),
     email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
     isFavourite: Joi.boolean(),
-    contactType: Joi.string().min(3).max(20).valid(...typeList).required()
+    contactType: Joi.string().min(3).max(20).valid(...typeList).required(),
 })
 export const contactUpdateSchema = Joi.object({
     name: Joi.string().min(3).max(20),
     phoneNumber: Joi.number().positive().min(2),
     email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
     isFavourite: Joi.boolean(),
-    contactType: Joi.string().min(3).max(20).valid(...typeList)
+    contactType: Joi.string().min(3).max(20).valid(...typeList),
 })
+

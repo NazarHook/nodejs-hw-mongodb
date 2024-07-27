@@ -2,9 +2,11 @@ import createHttpError from "http-errors";
 import { getContacts, getContactById, addContact, upsertContact, deleteContact } from '../services/contact-services.js';
 import parsePaginationParams from "../utils/parsePaginationParams.js";
 import parseContactFilterParams from "../utils/parseContactFilterparams.js";
-import { contactFiledList } from "../constants/contact-constants.js";
 import parseSortParams from "../utils/parseSortParams.js";
-import saveFileToCloudinary from "../utils/saveFIleToCloudinary.js";
+import saveFileToCloudinary from "../utils/saveFileToCloudinary.js";
+import saveFileToPublicDir from '../utils/saveFileToPublicDir.js'
+import { contactFiledList } from "../constants/contact-constants.js";
+import 'dotenv/config.js'
 
 export const getContactsController = async (req, res) => {
   const { _id: userId } = req.user;
@@ -34,19 +36,64 @@ export const getContactByIdController = async (req, res) => {
     data: contact,
   });
 };
-
 export const addContactController = async (req, res) => {
-  const { _id: userId } = req.user;
-  const { path: filePath } = req.file;
-  const photo = await saveFileToCloudinary(filePath);
-  const data = await addContact({ ...req.body, userId, photo: photo.secure_url });
+  try {
+    console.log("Request file:", req.file);
+    console.log("Request body:", req.body);
 
-  res.status(201).json({
-    status: 201,
-    message: 'Contact successfully added!',
-    data: data,
-  });
+    const { _id: userId } = req.user;
+    const enable_cloudinary = process.env.ENABLE_CLOUDINARY === "true";
+    let photo = "";
+
+    if (req.file) {
+      try {
+        const tempPath = req.file.path;
+        if (enable_cloudinary) {
+          const cloudinaryResponse = await saveFileToCloudinary(tempPath, { folder: "photos" });
+          console.log("Cloudinary response:", cloudinaryResponse);
+          photo = cloudinaryResponse.secure_url;
+        } else {
+          const publicDir = path.join(__dirname, '../public/photos');
+          const newFilePath = path.join(publicDir, req.file.filename);
+
+          if (!fs.existsSync(publicDir)) {
+            fs.mkdirSync(publicDir, { recursive: true });
+          }
+          fs.renameSync(tempPath, newFilePath);
+          photo = newFilePath;
+        }
+      } catch (error) {
+        console.error("File upload error:", error);
+        return res.status(500).json({
+          status: 500,
+          message: "Failed to upload file",
+          data: error.message,
+        });
+      }
+    } else {
+      return res.status(400).json({
+        status: 400,
+        message: "Photo is required",
+      });
+    }
+
+    const data = await addContact({ ...req.body, userId, photo });
+
+    res.status(201).json({
+      status: 201,
+      message: "Contact successfully added!",
+      data,
+    });
+  } catch (error) {
+    console.error("Add contact error:", error);
+    res.status(500).json({
+      status: 500,
+      message: "Failed to add contact",
+      data: error.message,
+    });
+  }
 };
+
 
 export const updateContactController = async (req, res) => {
   const { id } = req.params;

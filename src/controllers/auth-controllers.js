@@ -4,11 +4,18 @@ import fs from "node:fs/promises";
 import handlebars from "handlebars";
 import path from "node:path";
 import { signup, findUser, updateUser } from "../services/auth-services.js";
-import { compareHash } from "../utils/hashValue.js";
 import { createSession, findSession, deleteSession } from "../services/session-services.js";
 import sendMail from "../utils/sendMail.js";
 
+import { compareHash } from "../utils/hashValue.js";
+import sendMail from "../utils/sendMail.js";
 import { TEMPLATES_DIR } from "../constants/index.js";
+
+import dotenv from 'dotenv'
+dotenv.config()
+const app_domain = process.env.APP_DOMAIN;
+const jwt_secret = process.env.JWT_SECRET;
+const verifyEmailPath = path.join(TEMPLATES_DIR, "verify-email.html");
 
 const setupResponseSession = (res, { refreshToken, refreshTokenValidUntil, _id }) => {
   res.cookie("refreshToken", refreshToken, {
@@ -29,6 +36,29 @@ export const signUpController = async (req, res) => {
     throw createHttpError(409, 'Email in use');
   }
   const newUser = await signup(req.body);
+  const payload = {
+    id: newUser._id,
+    email,
+};
+
+const token = jwt.sign(payload, jwt_secret);
+
+const emailTemplateSource = await fs.readFile(verifyEmailPath, "utf-8");
+const emailTemplate = handlebars.compile(emailTemplateSource);
+const html = emailTemplate({
+    project_name: "My movies",
+    app_domain,
+    token,
+});
+
+const verifyEmail = {
+    subject: "Verify email",
+    to: email,
+    html,
+};
+
+await sendMail(verifyEmail);
+
   const data = {
     name: newUser.name,
     email: newUser.email,
@@ -39,7 +69,26 @@ export const signUpController = async (req, res) => {
     data,
   });
 };
+export const verifyController = async(req, res)=> {
+    const {token} = req.query;
+    try {
+        const {id, email} = jwt.verify(token, jwt_secret);
+        const user = await findUser({_id: id, email});
+        if(!user) {
+            throw createHttpError(404, "User not found");
+        }
 
+        await updateUser({_id: id}, {verify: true});
+
+        res.json({
+            status: 200,
+            message: "Email verify successfully",
+        })
+    }
+    catch(error) {
+        throw createHttpError(401, error.message);
+    }
+}
 export const signInController = async (req, res) => {
   const { email, password } = req.body;
   const user = await findUser({ email });
@@ -122,7 +171,7 @@ export const sendResetEmailController = async (req, res) => {
 
         res.status(200).json({
             status: 200,
-            message: "Reset password email has been successfully sent.",
+            message: `Reset password email has been successfully sent to ${email}.`,
             data: {},
         });
     } catch (error) {
