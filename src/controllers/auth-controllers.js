@@ -5,6 +5,7 @@ import handlebars from "handlebars";
 import path from "node:path";
 import { signup, findUser, updateUser } from "../services/auth-services.js";
 import { createSession, findSession, deleteSession } from "../services/session-services.js";
+import sendMail from "../utils/sendMail.js";
 
 import { compareHash } from "../utils/hashValue.js";
 import sendMail from "../utils/sendMail.js";

@@ -21,11 +21,9 @@ photo: {
 });
 
 contactSchema.post("save", mongooseSaveError);
-
 contactSchema.pre("findOneAndUpdate", setUpdateSettings);
-
 contactSchema.post("findOneAndUpdate", mongooseSaveError);
 
 const Contact = model('Contact', contactSchema);
 
-export default Contact; 
+export default Contact;
