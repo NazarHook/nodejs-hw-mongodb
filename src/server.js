@@ -7,6 +7,8 @@ import contactsRouter from './routers/contacts-router.js';
 import notFoundHandler from './middlewares/notFoundHandler.js'
 import errorHandler from './middlewares/errorHandler.js';
 import cookieParser from "cookie-parser";
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from '../docs/swagger.json' assert { type: 'json' };
 import { PUBLIC_DIR } from "./constants/index.js";
 const setupServer = () => {
   const app = express();
@@ -17,6 +19,7 @@ const setupServer = () => {
 });
 app.use(logger)
 app.use(cookieParser());
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
   app.use(cors());
   app.use(express.json())
   app.use(express.static(PUBLIC_DIR));

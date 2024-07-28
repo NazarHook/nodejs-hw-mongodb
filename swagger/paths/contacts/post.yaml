@@ -1,0 +1,19 @@
+post:
+  tags:
+    - Contacts
+  summary: Add a new contact
+  operationId: addContact
+  description: Add a new contact to the list
+  security:
+    - bearerAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/contact'
+  responses:
+    '201':
+      $ref: '#/components/responses/success'
+    '400':
+      $ref: '#/components/responses/notFound'

@@ -1,0 +1,41 @@
+openapi: 3.1.0
+info:
+  version: 1.0.0
+  title: Your App Title
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  description: Your app description
+tags:
+  - name: Contacts
+    description: API for managing contacts
+servers:
+  - url: http://localhost:3000
+  - url: # your deployed URL
+paths:
+  /contacts/{contactId}:
+    $ref: './paths/contacts/{contactId}/get.yaml'
+  /contacts:
+    get:
+      $ref: './paths/contacts/get.yaml'
+    post:
+      $ref: './paths/contacts/post.yaml'
+    patch:
+      $ref: './paths/contacts/patch.yaml'
+    delete:
+      $ref: './paths/contacts/delete.yaml'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    contact:
+      $ref: './components/schemas/contact.yaml'
+    user:
+      $ref: './components/schemas/user.yaml'
+  responses:
+    success:
+      $ref: './components/responses/success.yaml'
+    notFound:
+      $ref: './components/responses/notFound.yaml'
