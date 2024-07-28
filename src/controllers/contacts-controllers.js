@@ -1,3 +1,5 @@
+// controllers/contacts-controllers.js
+
 import createHttpError from "http-errors";
 import { getContacts, getContactById, addContact, upsertContact, deleteContact } from '../services/contact-services.js';
 import parsePaginationParams from "../utils/parsePaginationParams.js";
@@ -23,7 +25,6 @@ export const getContactsController = async (req, res) => {
 };
 
 export const getContactByIdController = async (req, res) => {
-  console.log('hello');
   const { id } = req.params;
   const { _id: userId } = req.user;
   const contact = await getContactById({ _id: id, userId });
@@ -36,30 +37,28 @@ export const getContactByIdController = async (req, res) => {
     data: contact,
   });
 };
+
 export const addContactController = async (req, res) => {
+  const { _id: userId } = req.user;
+  const enable_cloudinary = process.env.ENABLE_CLOUDINARY;
+  let photo = "";
 
-    const { _id: userId } = req.user;
-    const enable_cloudinary = process.env.ENABLE_CLOUDINARY === "true";
-    let photo = "";
-
-    if(req.file) {
-      if(enable_cloudinary === "true") {
-          photo = await saveFileToCloudinary(req.file, "photos");
-      }
-      else {
-          photo = await saveFileToPublicDir(req.file, "photos");
-      }
+  if(req.file) {
+    if(enable_cloudinary) {
+      photo = await saveFileToCloudinary(req.file, "photos");
+    } else {
+      photo = await saveFileToPublicDir(req.file, "photos");
+    }
   }
 
   const data = await addContact({ ...req.body, userId, photo });
 
   res.status(201).json({
-      status: 201,
-      message: "Success add movie",
-      data,
-  })
+    status: 201,
+    message: "Success add contact",
+    data,
+  });
 }
-
 
 export const updateContactController = async (req, res) => {
   const { id } = req.params;
@@ -77,7 +76,18 @@ export const updateContactController = async (req, res) => {
 export const patchContactController = async (req, res) => {
   const { id } = req.params;
   const { _id: userId } = req.user;
-  const result = await upsertContact({ _id: id, userId }, req.body);
+  const updates = req.body;
+  
+  if(req.file) {
+    const enable_cloudinary = process.env.ENABLE_CLOUDINARY;
+    if(enable_cloudinary) {
+      updates.photo = await saveFileToCloudinary(req.file, "photos");
+    } else {
+      updates.photo = await saveFileToPublicDir(req.file, "photos");
+    }
+  }
+
+  const result = await upsertContact({ _id: id, userId }, updates);
 
   if (!result) {
     throw createHttpError(404, `Contact with id=${id} not found`);
@@ -89,8 +99,6 @@ export const patchContactController = async (req, res) => {
     data: result.data.value,
   });
 };
-
-
 
 export const deleteContactController = async (req, res) => {
   const { id } = req.params;
