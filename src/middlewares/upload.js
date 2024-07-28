@@ -1,34 +1,33 @@
 import multer from "multer";
-import { TEMP_UPLOAD_DIR } from "../constants/index.js";
 import createHttpError from "http-errors";
 
+import { TEMP_UPLOAD_DIR } from "../constants/index.js";
+
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, TEMP_UPLOAD_DIR);
-  },
-  filename: (req, file, cb) => {
-    const uniquePrefix = Date.now();
-    const filename = `${uniquePrefix}_${file.originalname}`;
-    cb(null, filename);
-  },
-});
+    destination: TEMP_UPLOAD_DIR,
+    filename: (req, file, callback)=> {
+        const uniquePreffix = Date.now();
+        const filename = `${uniquePreffix}_${file.originalname}`;
+        callback(null, filename);
+    }
+})
 
 const limits = {
-  fileSize: 1024 * 1024 * 5, // 5 MB
+    fileSize: 1024 * 1024 * 5,
 };
 
-const fileFilter = (req, file, cb) => {
-  const extension = file.originalname.split(".").pop();
-  if (extension === "exe") {
-    return cb(createHttpError(400, ".exe files are not allowed"));
-  }
-  cb(null, true);
-};
+const fileFilter = (req, file, callback) => {
+    const extension = file.originalname.split(".").pop();
+    if(extension === "exe") {
+        return callback(createHttpError(400, ".exe file not allow"));
+    }
+    callback(null, true);
+}
 
 const upload = multer({
-  storage,
-  limits,
-  fileFilter,
-});
+    storage,
+    limits,
+    fileFilter,
+})
 
 export default upload;

@@ -1,21 +1,25 @@
-import cloudinary from 'cloudinary';
-import { promisify } from 'util';
+import fs from "node:fs/promises";
+import {v2 as cloudinary} from "cloudinary";
+import 'dotenv/config.js'
 
-cloudinary.v2.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+const cloud_name = process.env.CLOUDINARY_CLOUD_NAME;
+const api_key = process.env.CLOUDINARY_API_KEY;
+const api_secret = process.env.CLOUDINARY_API_SECRET;
 
-const uploadAsync = promisify(cloudinary.v2.uploader.upload);
+cloudinary.config({
+    cloud_name,
+    api_key,
+    api_secret,
+})
 
-const saveFileToCloudinary = async (filePath, options = {}) => {
-  try {
-    const result = await uploadAsync(filePath, options);
-    return result;
-  } catch (error) {
-    throw new Error(`Cloudinary upload failed: ${error.message}`);
-  }
-};
+const saveFileToCloudinary = async (file, folder) => {
+    const response = await cloudinary.uploader.upload(file.path, {
+        folder,
+    });
+    
+    await fs.unlink(file.path);
+
+    return response.secure_url;
+}
 
 export default saveFileToCloudinary;
