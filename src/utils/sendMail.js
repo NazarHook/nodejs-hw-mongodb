@@ -1,30 +1,17 @@
-import nodemailer from "nodemailer";
-import "dotenv/config";
-
-const {SMTP_USER, SMTP_PASSWORD} = process.env;
-
-const nodemailerConfig = {
-    host: "smtp-relay.brevo.com",
-    port: 465,
-    secure: true,
+import nodemailer from 'nodemailer';
+import 'dotenv/config.js'
+const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT),
+    secure: false,
     auth: {
-        user: SMTP_USER,
-        pass: SMTP_PASSWORD,
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASSWORD,
     },
-    logger: true
-};
-
-const transport = nodemailer.createTransport(nodemailerConfig);
-
-const sendEmail = data => {
-    try {
-        const email = {...data, from: SMTP_USER};
-    return transport.sendMail(email);
-    console.log('email sent succesfully');
-    } catch (error) {
-        console.log(error.message);
-    }
-    
-}
+  });
+  
+const sendEmail = async (options) => {
+    return await transporter.sendMail(options);
+  };
 
 export default sendEmail;
