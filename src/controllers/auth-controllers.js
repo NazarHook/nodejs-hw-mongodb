@@ -7,7 +7,7 @@ import { signup, findUser, updateUser } from "../services/auth-services.js";
 import { createSession, findSession, deleteSession } from "../services/session-services.js";
 import sendMail from "../utils/sendMail.js";
 
-import { compareHash } from "../utils/hashValue.js";
+import { compareHash, hashValue } from "../utils/hashValue.js";
 import { TEMPLATES_DIR } from "../constants/index.js";
 
 import dotenv from 'dotenv'
@@ -39,25 +39,6 @@ export const signUpController = async (req, res) => {
     id: newUser._id,
     email,
 };
-
-const token = jwt.sign(payload, jwt_secret);
-
-const emailTemplateSource = await fs.readFile(verifyEmailPath, "utf-8");
-const emailTemplate = handlebars.compile(emailTemplateSource);
-const html = emailTemplate({
-    project_name: "My movies",
-    app_domain,
-    token,
-});
-
-const verifyEmail = {
-    subject: "Verify email",
-    to: email,
-    html,
-};
-
-await sendMail(verifyEmail);
-
   const data = {
     name: newUser.name,
     email: newUser.email,
@@ -94,10 +75,11 @@ export const signInController = async (req, res) => {
   if (!user) {
     throw createHttpError(404, 'Email not found');
   }
-  const passwordCompare = compareHash(password, user.password);
+  const passwordCompare = await compareHash(password, user.password);
   if (!passwordCompare) {
     throw createHttpError(401, 'Password invalid');
   }
+
   const session = await createSession(user._id);
   setupResponseSession(res, session);
   res.json({
@@ -158,12 +140,22 @@ export const sendResetEmailController = async (req, res) => {
             throw createHttpError(404, "User not found!");
         }
 
-        const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "5m" });
+        const token = jwt.sign(
+            {
+              sub: user._id,
+              email,
+            },
+            process.env.JWT_SECRET,
+            {
+              expiresIn: '15m',
+            },
+          );
 
         const resetPasswordLink = `${process.env.APP_DOMAIN}/reset-password?token=${token}`;
 
         await sendMail({
             to: email,
+            from: process.env.SMTP_FROM,
             subject: "Password Reset",
             html: `<p>To reset your password, click <a href="${resetPasswordLink}">here</a>.</p>`,
         });
@@ -192,8 +184,8 @@ export const resetPasswordController = async (req, res) => {
     if (!user) {
       throw createHttpError(404, "User not found!");
     }
-
-    await updateUser(user._id, { password });
+const hashPassword = hashValue(password)
+    await updateUser(user._id, { hashPassword });
     await deleteSession({ userId: user._id });
 
     res.json({
