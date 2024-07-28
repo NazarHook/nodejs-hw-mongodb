@@ -16,10 +16,6 @@ paths:
   /contacts/{contactId}:
   get:
     $ref: '../swagger/paths/contacts/contactID/get.yaml'
-  patch:
-    $ref: '..swagger/paths/contacts/contactID/patch.yaml'
-  delete:
-    $ref: '../swagger/paths/contacts/contactID/delete.yaml'
   /contacts:
     get:
       $ref: '../swagger/paths/contacts/get.yaml'
