@@ -11,19 +11,24 @@ tags:
     description: API for managing contacts
 servers:
   - url: http://localhost:3000
-  - url: # your deployed URL
+  - url: https://nodejs-hw-mongodb-7-9tw1.onrender.com/api-docs/#/
 paths:
   /contacts/{contactId}:
-    $ref: './paths/contacts/{contactId}/get.yaml'
+  get:
+    $ref: '../swagger/paths/contacts/contactID/get.yaml'
+  patch:
+    $ref: '..swagger/paths/contacts/contactID/patch.yaml'
+  delete:
+    $ref: '../swagger/paths/contacts/contactID/delete.yaml'
   /contacts:
     get:
-      $ref: './paths/contacts/get.yaml'
+      $ref: '../swagger/paths/contacts/get.yaml'
     post:
-      $ref: './paths/contacts/post.yaml'
+      $ref: '../swagger/paths/contacts/post.yaml'
     patch:
-      $ref: './paths/contacts/patch.yaml'
+      $ref: '../swagger/paths/contacts/patch.yaml'
     delete:
-      $ref: './paths/contacts/delete.yaml'
+      $ref: '../swagger/paths/contacts/delete.yaml'
 components:
   securitySchemes:
     bearerAuth:
@@ -31,11 +36,11 @@ components:
       scheme: bearer
   schemas:
     contact:
-      $ref: './components/schemas/contact.yaml'
+      $ref: '../swagger/components/schemas/contact.yaml'
     user:
-      $ref: './components/schemas/user.yaml'
+      $ref: '../swagger/components/schemas/user.yaml'
   responses:
     success:
-      $ref: './components/responses/success.yaml'
+      $ref: '../swagger/components/responses/success.yaml'
     notFound:
-      $ref: './components/responses/notFound.yaml'
+      $ref: '../swagger/components/responses/notFound.yaml'

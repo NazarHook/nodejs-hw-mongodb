@@ -1,5 +1,4 @@
 import path from "node:path";
-
 export const sortOrderList = ["asc", "desc"];
 
 export const ACCESS_TOKEN_LIFETIME = 15 * 60 * 1000;
