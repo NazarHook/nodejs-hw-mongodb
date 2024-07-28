@@ -8,7 +8,6 @@ import { createSession, findSession, deleteSession } from "../services/session-s
 import sendMail from "../utils/sendMail.js";
 
 import { compareHash } from "../utils/hashValue.js";
-import sendMail from "../utils/sendMail.js";
 import { TEMPLATES_DIR } from "../constants/index.js";
 
 import dotenv from 'dotenv'
